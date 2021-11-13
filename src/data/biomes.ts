@@ -8,6 +8,7 @@ export enum Biome  {
   coal = 'coal',
 }
 
-export const makeBiomes = (n: number): Biome[] => Array
+export type DisplayedBiome = { type: Biome, modifier: string, id: number };
+export const makeBiomes = (n: number): Array<DisplayedBiome> => Array
   .from(Array(n))
-  .map(() => randInArray(Object.values(Biome)));
+  .map((_, id) => ({ type: randInArray(Object.values(Biome)), modifier: '', id }));

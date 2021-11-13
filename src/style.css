@@ -5,3 +5,29 @@
 @tailwind components;
 
 @tailwind utilities;
+
+button {
+  @apply border border-gray-500 bg-blue-500 text-white h-4 w-4 block flex items-center justify-center p-0 mx-2;
+}
+
+.bg-stoneFurnace {
+  position: relative;
+}
+.bg-stoneFurnace::after {
+  @apply animate-pulse;
+  content: "🏮";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+}
+
+.cursor-stoneAxe {
+  cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>⛏️</text></svg>") 16 0,auto; 
+}
+
+.cursor-furnace {
+  cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'  width='40' height='48' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>🏮</text></svg>") 16 0,auto;
+}
