@@ -39,5 +39,6 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'import/no-unused-modules': 'off',
     'jsx-a11y/label-has-associated-control': 'off',
+    'react/jsx-filename-extension': 'off',
   },
 };

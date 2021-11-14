@@ -15,6 +15,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^15.0.0",
     "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-react": "^7.27.0",
     "eslint-plugin-rxjs": "^4.0.2",
     "parcel": "^2.0.1",
     "tslib": "^2.3.1",

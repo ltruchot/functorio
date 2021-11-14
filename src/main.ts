@@ -1,5 +1,15 @@
-import { fromEvent, interval, merge, pipe } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
+
+import { fromEvent, interval, timer, merge, concat, Observable, pipe, of, from, EMPTY, forkJoin } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
+import { filter, tap, pluck, mapTo, map,
+  reduce, scan, take, first, takeWhile, takeUntil, distinctUntilChanged, distinctUntilKeyChanged, skip,
+  debounce, debounceTime, throttleTime, sampleTime, sample, delay,
+  mergeMap, mergeAll, switchMap, concatMap, exhaustMap, mergeMapTo, finalize, switchMapTo,
+  catchError,
+  startWith, endWith,
+  concatWith, withLatestFrom,
+  share,
+} from 'rxjs/operators';
 import { Biome, makeBiomes, DisplayedBiome } from './data/biomes';
 import { button, byId, div } from './lib/dom';
 import { Tile } from './components/Tile';
@@ -48,7 +58,15 @@ app.replaceChildren(worldEl, inventoryEl);
 renderWorld();
 renderInventory();
 
-const clickEvents$ = fromEvent(document, 'click', (e) => e.target as HTMLElement);
+const clickEvents$ = fromEvent(document, 'click').pipe(pluck('target')) as  Observable<HTMLElement>;
+const activeFurnaces$ = timer(0, 5000).pipe(
+  tap(() => {
+    if (inventory.charcoal.count > 0 && inventory.ironOre.count > 0) {
+      inventory.charcoal.count--;
+      inventory.ironOre.count--;
+      inventory.ironLingot.count++;
+    }
+  }));
 merge(
   // gather basic resources
   clickEvents$.pipe(gatherBiome(Biome.trees, Item.branch)),
@@ -62,23 +80,14 @@ merge(
   // furnace
   clickEvents$.pipe(
     filter(el => el.classList.contains(Biome.empty)),
+    filter(_ => inventory[Item.stoneFurnace].count > 0),
     tap((el) => {
-      if (inventory[Item.stoneFurnace].count > 0) {
-        const biome = biomes.find(b => b.id === Number(el.id.replace('biome-', ''))) as DisplayedBiome;
-        biome.modifier = 'bg-stoneFurnace';
-        inventory[Item.stoneFurnace].count--;
-        interval(5000).pipe(
-          tap(() => {
-            if (inventory.charcoal.count > 0 && inventory.ironOre.count > 0) {
-              inventory.charcoal.count--;
-              inventory.ironOre.count--;
-              inventory.ironLingot.count++;
-            }
-          }),
-          tap(renderGame),
-        ).subscribe();
-      }
+      const biome = biomes.find(b => b.id === Number(el.id.replace('biome-', ''))) as DisplayedBiome;
+      biome.modifier = 'bg-stoneFurnace';
+      inventory[Item.stoneFurnace].count--;
     }),
+    mergeMapTo(activeFurnaces$),
+    tap(console.log),
   ),
 
   // buttons to create
@@ -91,4 +100,4 @@ merge(
       inventory[item].count++;
     }),
   )),  
-).pipe(tap(renderGame)).subscribe(console.log);
+).pipe(tap(renderGame), mapTo('rx event')).subscribe(console.log);
